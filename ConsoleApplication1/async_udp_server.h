@@ -27,7 +27,7 @@ namespace aliya_dht
 		}
 
 		template<typename Message>
-		void async_send(const Message &message, const udp::endpoint &endpoint)
+		void send(const Message &message, const udp::endpoint &endpoint)
 		{
 			message.serialize(_send_buf);
 			_to_endpoint = endpoint;
@@ -56,7 +56,7 @@ namespace aliya_dht
 
 		void on_send(const boost::system::error_code& error, size_t bytes_sent)
 		{
-			std::cout << "sent message to " << _to_endpoint.address().to_string()<< ":" << _to_endpoint.port() << std::endl;
+			//std::cout << "sent message to " << _to_endpoint.address().to_string()<< ":" << _to_endpoint.port() << std::endl;
 		}
 
 		Handler *_handler;

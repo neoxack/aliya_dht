@@ -57,6 +57,15 @@
     <ClInclude Include="messages\join_message.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="messages\neighbors_message.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="messages\find_message.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="udp_server.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

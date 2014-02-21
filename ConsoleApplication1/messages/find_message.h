@@ -11,15 +11,15 @@ namespace aliya_dht {
 
 	using boost::asio::ip::udp;
 
-	class join_message
+	class find_message
 	{
 	public: 
 
-		join_message(){}
+		find_message(){}
 
-		join_message(double node_id, const udp::endpoint &endpoint)
+		find_message(double id, double node_id, uint32_t type, const udp::endpoint &endpoint)
 		{
-			message.node_id = node_id;
+			message.id = id;
 			if(endpoint.address().is_v4())
 			{
 				message.address_type = V4;
@@ -30,13 +30,14 @@ namespace aliya_dht {
 				message.address_type = V6;
 				message.addr_v6 = endpoint.address().to_v6().to_bytes();
 			}
+			message.type = type;
 			message.port = endpoint.port();			
 		}
 
 		void serialize(std::array<char, aliya_dht::buf_size> &buf) const
 		{
 			header header;
-			header.type = packet_type::JOIN;
+			header.type = packet_type::FIND;
 			header.timestamp = time(0);
 			header.size = size();
 			header.serialize(buf.data());
@@ -45,7 +46,7 @@ namespace aliya_dht {
 
 		bool parse(const std::array<char, aliya_dht::buf_size> &buf, const header &head)
 		{
-			if(head.type != packet_type::JOIN) return false;
+			if(head.type != packet_type::FIND) return false;
 			std::memcpy(&message, buf.data()+sizeof(header), sizeof(message));
 			return true;
 		}
@@ -70,10 +71,12 @@ namespace aliya_dht {
 
 		}
 
-		#pragma pack(1)
+#pragma pack(1)
 		struct data
 		{
+			double id;
 			double node_id;
+			uint32_t type;
 			uint32_t address_type;
 			unsigned short port;
 			union {
@@ -85,6 +88,11 @@ namespace aliya_dht {
 		enum {
 			V4 = 0x1908383a,
 			V6 = 0xf7065916
+		};
+
+		enum {
+			RESPONSE = 0x3e7b0bfb,
+			REQUEST = 0x3b978f9f
 		};
 
 	};

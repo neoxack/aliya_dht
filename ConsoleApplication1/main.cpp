@@ -12,30 +12,32 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	try
 	{
-		aliya_dht::node node_b;
-		node_b.start("127.0.0.1", 9001);
-		aliya_dht::node node_a;
-		node_a.start("127.0.0.1", 9000);
-		aliya_dht::node node_c;
-		node_c.start("127.0.0.1", 9003);
+		std::array<aliya_dht::node, 20> nodes;
+		for(size_t i = 0; i< nodes.size(); i++)
+		{
+			nodes[i].start ("127.0.0.1", 9000+i);
+			cout << nodes[i].to_string() << endl;
+		}
 		
-		cout << node_a.to_string() << endl;
-		cout << node_b.to_string() << endl;
-		cout << node_c.to_string() << endl;
-		cout << sizeof(ip::address) << endl;
-		cout << sizeof(ip::address_v4) << endl;
-		cout << sizeof(ip::address_v6) << endl;
-
-
+	
 		_getch();
-		for(int i = 0; i< 10; i++){
 
-			node_a.join_to_dht("127.0.0.1", 9001);
-			
-			_getch();
+		for(size_t i = 0; i< nodes.size(); i++)
+		{
+			nodes[i].join_to_dht("127.0.0.1", 9001);
+			std::this_thread::sleep_for(std::chrono::milliseconds(500));
 		}
 
 		_getch();
+
+		for(size_t i = 0; i< nodes.size(); i++)
+		{
+			nodes[1].find_node(to_string(i),[](aliya_dht::node_entry entry, int error){ if(error == aliya_dht::NOT_FIND) cout <<"timeout"<< endl; cout << entry.node_id << endl;});
+			std::this_thread::sleep_for(std::chrono::milliseconds(300));
+		}
+
+		_getch();
+			
 	}
 	catch(std::exception& e)
 	{
